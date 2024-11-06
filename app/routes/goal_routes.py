@@ -28,12 +28,3 @@ def get_all_goals():
     goals_response = [goal.to_dict() for goal in goals]
     return goals_response
 
-def validate_task(task_id):
-    try:
-        task_id = int(task_id)
-    except:
-        response = {"message": f"book {task_id} invalid"}
-        abort(make_response(response , 400))
-
-    query = db.select(Task).where(Task.id == task_id)
-    task = db.session.scalar(query)

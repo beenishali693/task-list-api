@@ -1,9 +1,10 @@
-from flask import Blueprint, abort, make_response, request, Response 
+from flask import Blueprint, abort, make_response, request
 from ..db import db
 from app.models.task import Task
 from datetime import date
 import requests 
 import os
+from app.routes.route_utilities import validate_model, send_slack_message
 
 tasks_bp = Blueprint("tasks_bp", __name__, url_prefix="/tasks")
 
@@ -40,31 +41,16 @@ def get_all_tasks():
     tasks_response = [task.to_dict() for task in tasks]
     return tasks_response
 
-def validate_task(task_id):
-    try:
-        task_id = int(task_id)
-    except:
-        response = {"message": f"book {task_id} invalid"}
-        abort(make_response(response , 400))
-
-    query = db.select(Task).where(Task.id == task_id)
-    task = db.session.scalar(query)
-
-    if not task:
-        response = {"message": f"task {task_id} not found"}
-        abort(make_response(response, 404))
-
-    return task
 
 @tasks_bp.get("/<task_id>")
 def get_one_task(task_id):
-    task = validate_task(task_id)
+    task = validate_model(Task, task_id)
 
     return {"task" : task.to_dict()}
 
 @tasks_bp.put("/<task_id>")
 def update_task(task_id):
-    task = validate_task(task_id)
+    task = validate_model(Task, task_id)
     request_body = request.get_json()
 
     task.title = request_body["title"]
@@ -77,7 +63,7 @@ def update_task(task_id):
 
 @tasks_bp.delete("/<task_id>")
 def delete_task(task_id):
-    task = validate_task(task_id)
+    task = validate_model(Task, task_id)
     
     db.session.delete(task)
     db.session.commit()
@@ -88,7 +74,7 @@ def delete_task(task_id):
 
 @tasks_bp.patch("/<task_id>/mark_complete")
 def update_task_mark_completion(task_id):
-    task = validate_task(task_id)
+    task = validate_model(Task, task_id)
 
     task.completed_at = date.today()
     task.is_complete = True
@@ -101,7 +87,7 @@ def update_task_mark_completion(task_id):
 
 @tasks_bp.patch("/<task_id>/mark_incomplete")
 def update_task_mark_incompletion(task_id):
-    task = validate_task(task_id)
+    task = validate_model(Task, task_id)
 
     task.completed_at = None
     task.is_complete = False
@@ -111,15 +97,7 @@ def update_task_mark_incompletion(task_id):
 
     return response, 200
 
-def send_slack_message():
-    path = "https://slack.com/api/chat.postMessage"
-    headers = {"Authorization" :os.environ.get('SLACK_API_TOKEN')}
-    data = {
-    "channel": "C080EU3HERW",
-    "text" : "Someone just completed the task My Beautiful Task"
-    }
-    
-    requests.post(path,data=data,headers=headers)
+
     
 
 

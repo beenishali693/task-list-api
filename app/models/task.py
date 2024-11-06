@@ -4,6 +4,7 @@ from datetime import datetime
 from sqlalchemy import DateTime
 from typing import Optional
 
+
 class Task(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     title: Mapped[str]

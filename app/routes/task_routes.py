@@ -83,6 +83,18 @@ def delete_task(task_id):
     
     return response, 200
 
+@tasks_bp.patch("/<task_id>/<mark_completion>")
+def update_task_mark_completion(task_id):
+    task = validate_task(task_id)
+    request_body = request.get_json()
+
+    task.title = request_body["title"]
+    task.description = request_body["description"]
+    db.session.commit()
+
+    response = {"task": task.to_dict()}
+
+    return response, 200
 
 
 

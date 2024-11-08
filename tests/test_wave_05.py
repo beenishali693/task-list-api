@@ -83,7 +83,7 @@ def test_create_goal(client):
 def test_update_goal(client, one_goal):
     # Act
     response = client.put("/goals/1", json={
-        "title": "Updated Task Title"})
+        "title": "Updated Goal Title"})
     response_body = response.get_json()
 
     # Assert
@@ -92,10 +92,10 @@ def test_update_goal(client, one_goal):
     assert response_body == {
         "goal": {
             "id": 1,
-            "title": "Updated Task Title"}
+            "title": "Updated Goal Title"}
     }
     goal= Goal.query.get(1)
-    assert goal.title == "Updated Task Title"
+    assert goal.title == "Updated Goal Title"
     
 
 
@@ -104,7 +104,7 @@ def test_update_goal(client, one_goal):
 def test_update_goal_not_found(client):
     # Act
     response = client.put("/goals/1", json={
-        "title": "Updated Task Title"})
+        "title": "Updated Goal Title"})
     response_body = response.get_json()
 
     # Assert

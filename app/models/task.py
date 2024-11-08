@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy import DateTime, ForeignKey
 from typing import Optional, TYPE_CHECKING
 if TYPE_CHECKING:
-  from .goal import Goal
+    from .goal import Goal
 
 
 class Task(db.Model):

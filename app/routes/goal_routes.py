@@ -81,7 +81,16 @@ def update_goal_with_tasks(goal_id):
 def get_tasks_for_goal(goal_id):
     goal = validate_model(Goal, goal_id)
     
-    response = goal.to_dict()
+    if goal.tasks:
+        task_list = [task.to_dict() for task in goal.tasks]
+    else:
+        task_list = []
+    
+    response = {
+            "id" : goal.id,
+            "title" : goal.title,
+            "tasks" : task_list
+            }
     
     return response 
 

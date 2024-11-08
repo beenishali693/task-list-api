@@ -80,7 +80,7 @@ def update_task_mark_completion(task_id):
     task.is_complete = True
     db.session.commit()
 
-    send_slack_message()
+    send_slack_message(task.title)
 
     response = {"task": task.to_dict()}
     return response, 200

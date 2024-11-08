@@ -19,12 +19,12 @@ def validate_model(cls, model_id):
     
     return model
 
-def send_slack_message():
+def send_slack_message(task_title):
     path = "https://slack.com/api/chat.postMessage"
     headers = {"Authorization" :os.environ.get('SLACK_API_TOKEN')}
     data = {
     "channel": "C080EU3HERW",
-    "text" : "Someone just completed the task My Beautiful Task"
+    "text" : f"Someone just completed the task: {task_title}"
     }
     
     requests.post(path,data=data,headers=headers)
